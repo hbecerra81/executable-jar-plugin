@@ -1,0 +1,30 @@
+apply plugin: 'groovy'
+
+group 'org.lain.gradle.plugin'
+version '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()    
+}
+
+compileGroovy {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+    options.encoding = 'MS950'
+}
+
+sourceSets {
+    main {
+        groovy {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'resource'
+        }
+    }
+}
