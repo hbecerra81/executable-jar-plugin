@@ -22,7 +22,6 @@ class ExecutableJarPlugin implements Plugin<Project> {
             doFirst {
                 from project.configurations.runtime.files
                 destinationDir = new File(project.buildDir, "dist")
-                archiveName = "$project.name.$extension"
 
                 manifest {
                     attributes  project.jar.manifest.attributes
