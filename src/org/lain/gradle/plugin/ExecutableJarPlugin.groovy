@@ -21,7 +21,7 @@ class ExecutableJarPlugin implements Plugin<Project> {
         project.task('executableJar', type: Jar) {
             doFirst {
                 from project.configurations.runtime.files
-                destinationDir = new File(project.buildDir, "dist")
+                destinationDir = new File(project.buildDir, "app")
 
                 manifest {
                     attributes  project.jar.manifest.attributes
