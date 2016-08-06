@@ -6,21 +6,17 @@ import org.gradle.api.tasks.bundling.Jar
 
 class ExecutableJarPlugin implements Plugin<Project> {
     String jarPath;
-    String jarName;
 
     ExecutableJarPlugin() {
-         File file = new java.io.File(ExecutableJarPlugin.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-         jarPath = file.absolutePath
-         jarName = file.name
+         jarPath = new File(ExecutableJarPlugin.class.protectionDomain.codeSource.location.toURI()).absolutePath
     }
 
     void apply(Project project) {
         project.ext.mainClassName = null
-        def jarinjarSrc = project.zipTree(jarPath).matching({
+
+        project.compileJava.source project.zipTree(jarPath).matching({
             include 'META-INF/jarinjarloader/**/*.java'
         })
-
-        project.compileJava.source jarinjarSrc
 
         project.task('executableJar', type: Jar) {
             doFirst {
@@ -29,7 +25,7 @@ class ExecutableJarPlugin implements Plugin<Project> {
                 archiveName = "$project.name.$extension"
 
                 manifest {
-                    attributes project.jar.manifest.attributes
+                    attributes  project.jar.manifest.attributes
                     attributes  'Rsrc-Main-Class':  project.mainClassName,
                                 'Main-Class':       'org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader',
                                 'Rsrc-Class-Path':  ['./', *(project.configurations.runtime.files*.name)].join(' '),
