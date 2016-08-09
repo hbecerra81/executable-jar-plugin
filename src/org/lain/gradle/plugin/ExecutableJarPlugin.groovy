@@ -3,6 +3,7 @@ package org.lain.gradle.plugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.bundling.Jar
+import org.gradle.api.tasks.compile.JavaCompile
 
 class ExecutableJarPlugin implements Plugin<Project> {
     String jarPath;
@@ -15,6 +16,14 @@ class ExecutableJarPlugin implements Plugin<Project> {
 
         if(!project.ext.hasProperty('mainClassName')){
             project.ext.mainClassName = null
+        }
+
+        project.task('compileJarInJarLoader', type: JavaCompile) {
+            options.fork = true
+            options.warnings = false
+            source project.zipTree(jarPath).matching({
+                include 'META-INF/jarinjarloader/**/*.java'
+            })
         }
 
         project.task('executableJar', type: Jar) {
@@ -34,11 +43,12 @@ class ExecutableJarPlugin implements Plugin<Project> {
         }
 
         project.afterEvaluate {
-            project.compileJava.source project.zipTree(jarPath).matching({
-                include 'META-INF/jarinjarloader/**/*.java'
-            })
+            project.compileJarInJarLoader.destinationDir = project.compileJava.destinationDir
+            project.compileJarInJarLoader.classpath = project.files()
 
+            project.compileJava.finalizedBy project.compileJarInJarLoader
             project.jar.finalizedBy project.executableJar
+
         }
     }
 }

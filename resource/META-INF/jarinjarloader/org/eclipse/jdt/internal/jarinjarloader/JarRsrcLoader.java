@@ -32,6 +32,7 @@ import java.util.jar.Manifest;
  * 
  * @since 3.5
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class JarRsrcLoader {
  
 	private static class ManifestInfo {
