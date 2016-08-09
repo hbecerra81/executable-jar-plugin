@@ -32,7 +32,6 @@ import java.util.jar.Manifest;
  * 
  * @since 3.5
  */
-@SuppressWarnings("all")
 public class JarRsrcLoader {
  
 	private static class ManifestInfo {
