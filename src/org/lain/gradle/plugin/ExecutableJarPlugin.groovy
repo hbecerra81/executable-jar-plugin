@@ -12,11 +12,10 @@ class ExecutableJarPlugin implements Plugin<Project> {
     }
 
     void apply(Project project) {
-        project.ext.mainClassName = null
 
-        project.compileJava.source project.zipTree(jarPath).matching({
-            include 'META-INF/jarinjarloader/**/*.java'
-        })
+        if(!project.ext.hasProperty('mainClassName')){
+            project.ext.mainClassName = null
+        }
 
         project.task('executableJar', type: Jar) {
             doFirst {
@@ -34,6 +33,12 @@ class ExecutableJarPlugin implements Plugin<Project> {
             }
         }
 
-        project.jar.finalizedBy project.executableJar
+        project.afterEvaluate {
+            project.compileJava.source project.zipTree(jarPath).matching({
+                include 'META-INF/jarinjarloader/**/*.java'
+            })
+
+            project.jar.finalizedBy project.executableJar
+        }
     }
 }
