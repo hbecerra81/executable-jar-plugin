@@ -13,10 +13,7 @@ class ExecutableJarPlugin implements Plugin<Project> {
     }
 
     void apply(Project project) {
-
-        if(!project.ext.hasProperty('mainClassName')){
-            project.ext.mainClassName = null
-        }
+        project.convention.plugins.'org.lain.gradle.plugin.executable-jar' = new ExecutableJarPluginConvention()
 
         project.task('compileJarInJarLoader', type: JavaCompile) {
             options.fork = true
@@ -33,7 +30,7 @@ class ExecutableJarPlugin implements Plugin<Project> {
 
                 manifest {
                     attributes  project.jar.manifest.attributes
-                    attributes  'Rsrc-Main-Class':  project.mainClassName,
+                    attributes  'Rsrc-Main-Class':  project.property('mainClassName'),
                                 'Main-Class':       'org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader',
                                 'Rsrc-Class-Path':  ['./', *(project.configurations.runtime.files*.name)].join(' '),
                                 'Class-Path':       '.'
